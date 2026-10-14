@@ -18,7 +18,7 @@ export const LIMITS = Object.freeze({
 /** Default rates and durations; `quick` is the CI variant of every profile. */
 export const DEFAULTS = Object.freeze({
   full: { rate: 600, steps: [400, 700, 1000, 1300, 1600, 1900, 2200, 2500], peakFactor: 2, holdS: { load: 60, stress: 15, spike: 10, soak: 180 } },
-  quick: { rate: 200, steps: [200, 400, 800, 1600, 3200], peakFactor: 2, holdS: { load: 10, stress: 5, spike: 5, soak: 20 } },
+  quick: { rate: 200, steps: [200, 400, 800, 1600, 3200, 6400, 12800], peakFactor: 2, holdS: { load: 10, stress: 5, spike: 5, soak: 20 } },
 });
 
 /** @typedef {"load" | "stress" | "spike" | "soak"} Kind */

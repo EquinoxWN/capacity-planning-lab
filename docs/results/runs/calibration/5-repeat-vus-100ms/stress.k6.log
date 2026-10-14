@@ -1,0 +1,13 @@
+time="2026-10-09T20:40:14+07:00" level=warning msg="Insufficient VUs, reached 240 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step07
+time="2026-10-09T20:40:20+07:00" level=warning msg="Insufficient VUs, reached 270 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step08
+stress test: 8 steps of 15 s from 400 to 2500 req/s
+total: 171997 requests, failed 9.30%, p95 111.725 ms, dropped 2009, max VUs 510
+step01      400 req/s  p95    5.998 ms  failed   0.00%  dropped     0  meets SLO
+step02      700 req/s  p95     7.29 ms  failed   0.00%  dropped     0  meets SLO
+step03     1000 req/s  p95    7.121 ms  failed   0.00%  dropped     0  meets SLO
+step04     1300 req/s  p95    5.569 ms  failed   0.00%  dropped     0  meets SLO
+step05     1600 req/s  p95    9.659 ms  failed   0.00%  dropped     0  meets SLO
+step06     1900 req/s  p95   55.905 ms  failed   0.70%  dropped     0  misses SLO
+step07     2200 req/s  p95  116.973 ms  failed  16.50%  dropped    47  misses SLO
+step08     2500 req/s  p95  158.448 ms  failed  29.10%  dropped  1962  misses SLO
+time="2026-10-09T20:40:34+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:step08}, http_req_duration{scenario:step06}, http_req_duration{scenario:step07}, http_req_duration{scenario:step08}, http_req_failed{scenario:step07}, http_req_failed{scenario:step08}' have been crossed"

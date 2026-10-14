@@ -1,0 +1,10 @@
+[trimmed for the repository: 6907 k6 "Request Failed" warnings removed (6491 "actively refused", 416 "request timeout"); first and last kept below]
+time="2026-10-09T20:31:33+07:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:55163/work\": dial tcp 127.0.0.1:55163: connectex: No connection could be made because the target machine actively refused it."
+time="2026-10-09T20:31:42+07:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:55163/work\": request timeout"
+time="2026-10-09T20:31:33+07:00" level=warning msg="Insufficient VUs, reached 340 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=spike
+spike test: 960 -> 3200 req/s for 10 s -> 960 req/s
+total: 78056 requests, failed 14.70%, p95 95.372 ms, dropped 1950, max VUs 456
+before      960 req/s  p95    2.859 ms  failed   0.00%  dropped     0  meets SLO (gated)
+spike      3200 req/s  p95  127.364 ms  failed  38.30%  dropped  1950  misses SLO
+after       960 req/s  p95     2.11 ms  failed   0.00%  dropped     0  meets SLO (gated)
+time="2026-10-09T20:32:12+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:spike}, http_req_duration{scenario:spike}, http_req_failed{scenario:spike}' have been crossed"

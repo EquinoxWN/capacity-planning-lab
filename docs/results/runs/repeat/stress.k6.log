@@ -1,0 +1,15 @@
+time="2026-10-09T20:50:52+07:00" level=warning msg="Insufficient VUs, reached 270 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step03
+time="2026-10-09T20:51:18+07:00" level=warning msg="Insufficient VUs, reached 400 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step05
+time="2026-10-09T20:51:47+07:00" level=warning msg="Insufficient VUs, reached 400 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step07
+time="2026-10-09T20:52:00+07:00" level=warning msg="Insufficient VUs, reached 400 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=step08
+stress test: 8 steps of 15 s from 400 to 2500 req/s
+total: 165605 requests, failed 10.60%, p95 221.711 ms, dropped 8396, max VUs 800
+step01      400 req/s  p95   75.915 ms  failed   0.00%  dropped     0  misses SLO
+step02      700 req/s  p95    9.866 ms  failed   0.00%  dropped     0  meets SLO
+step03     1000 req/s  p95  182.207 ms  failed   5.90%  dropped   198  misses SLO
+step04     1300 req/s  p95    6.293 ms  failed   0.00%  dropped     0  meets SLO
+step05     1600 req/s  p95   165.26 ms  failed   3.90%  dropped  1618  misses SLO
+step06     1900 req/s  p95   54.213 ms  failed   0.40%  dropped     0  misses SLO
+step07     2200 req/s  p95  270.487 ms  failed  18.80%  dropped  1828  misses SLO
+step08     2500 req/s  p95   333.67 ms  failed  30.20%  dropped  4752  misses SLO
+time="2026-10-09T20:52:16+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:step03}, dropped_iterations{scenario:step05}, dropped_iterations{scenario:step07}, dropped_iterations{scenario:step08}, http_req_duration{scenario:step01}, http_req_duration{scenario:step03}, http_req_duration{scenario:step05}, http_req_duration{scenario:step06}, http_req_duration{scenario:step07}, http_req_duration{scenario:step08}, http_req_failed{scenario:step03}, http_req_failed{scenario:step05}, http_req_failed{scenario:step07}, http_req_failed{scenario:step08}' have been crossed"

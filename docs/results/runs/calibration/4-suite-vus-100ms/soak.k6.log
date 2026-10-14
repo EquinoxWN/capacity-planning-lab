@@ -1,0 +1,5 @@
+time="2026-10-09T20:32:56+07:00" level=warning msg="Insufficient VUs, reached 116 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=soak
+shortened soak: 960 req/s for 180 s on a shared laptop (a production soak runs for hours)
+total: 177642 requests, failed 0.20%, p95 4.655 ms, dropped 435, max VUs 232
+warmup      960 req/s  p95     2.16 ms  failed   0.00%  dropped     0  meets SLO
+soak        960 req/s  p95    4.816 ms  failed   0.20%  dropped   435  meets SLO (gated)

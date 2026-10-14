@@ -1,0 +1,64 @@
+{
+  "schema": "caplab.k6-summary.v1",
+  "kind": "load",
+  "scale": "full",
+  "label": "load test: 960 req/s for 60 s after a 10 s warm-up",
+  "slo": {
+    "p95Ms": 50,
+    "errorRate": 0.01,
+    "droppedRate": 0.01
+  },
+  "windows": [
+    {
+      "name": "warmup",
+      "rate": 960,
+      "startS": 0,
+      "endS": 10,
+      "gate": false
+    },
+    {
+      "name": "load",
+      "rate": 960,
+      "startS": 10,
+      "endS": 70,
+      "gate": true
+    }
+  ],
+  "testRunDurationMs": 70005,
+  "totals": {
+    "requests": 62756,
+    "failedRate": 0.019,
+    "droppedIterations": 115,
+    "shedResponses": 1168,
+    "transportErrors": 0,
+    "vusMax": 520,
+    "p50Ms": 1.649,
+    "p95Ms": 120.481,
+    "p99Ms": 271.192,
+    "maxMs": 710.833
+  },
+  "scenarios": [
+    {
+      "name": "warmup",
+      "iterations": 5269,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.306,
+      "p95Ms": 3.896,
+      "p99Ms": 7.32,
+      "maxMs": 35.185,
+      "thresholdsOk": true
+    },
+    {
+      "name": "load",
+      "iterations": 57487,
+      "failedRate": 0.02,
+      "droppedIterations": 115,
+      "p50Ms": 1.692,
+      "p95Ms": 131.639,
+      "p99Ms": 278.782,
+      "maxMs": 710.833,
+      "thresholdsOk": false
+    }
+  ]
+}

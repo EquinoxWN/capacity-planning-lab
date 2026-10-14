@@ -1,0 +1,25 @@
+# Update pull requests are paused so the repository keeps a single main branch; CI audits dependencies on every push.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+  - package-ecosystem: gomod
+    directory: /go
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+  - package-ecosystem: npm
+    directory: /js
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    ignore:
+      # Node.js 24 is the supported runtime, so its type definitions stay on 24.x.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # @types/k6 follows the k6 version pinned in scripts/get-k6.sh; bump both together.
+      - dependency-name: "@types/k6"
+        update-types: ["version-update:semver-major"]

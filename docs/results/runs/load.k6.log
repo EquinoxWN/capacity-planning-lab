@@ -1,0 +1,6 @@
+time="2026-10-09T20:45:17+07:00" level=warning msg="Insufficient VUs, reached 260 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=load
+load test: 960 req/s for 60 s after a 10 s warm-up
+total: 62756 requests, failed 1.90%, p95 120.481 ms, dropped 115, max VUs 520
+warmup      960 req/s  p95    3.896 ms  failed   0.00%  dropped     0  meets SLO
+load        960 req/s  p95  131.639 ms  failed   2.00%  dropped   115  misses SLO (gated)
+time="2026-10-09T20:46:02+07:00" level=error msg="thresholds on metrics 'http_req_duration{scenario:load}, http_req_failed{scenario:load}' have been crossed"

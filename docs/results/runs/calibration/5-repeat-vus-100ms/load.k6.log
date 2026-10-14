@@ -1,0 +1,7 @@
+time="2026-10-09T20:40:41+07:00" level=warning msg="Insufficient VUs, reached 116 active VUs and cannot initialize more" executor=ramping-arrival-rate scenario=warmup
+time="2026-10-09T20:41:07+07:00" level=warning msg="Insufficient VUs, reached 116 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=load
+load test: 960 req/s for 60 s after a 10 s warm-up
+total: 62138 requests, failed 1.10%, p95 64.992 ms, dropped 732, max VUs 232
+warmup      960 req/s  p95  173.782 ms  failed   6.70%  dropped   115  misses SLO
+load        960 req/s  p95   35.202 ms  failed   0.60%  dropped   617  misses SLO (gated)
+time="2026-10-09T20:41:46+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:load}, dropped_iterations{scenario:warmup}, http_req_duration{scenario:warmup}, http_req_failed{scenario:warmup}' have been crossed"

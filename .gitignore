@@ -1,0 +1,27 @@
+.DS_Store
+.env
+.idea/
+.vscode/
+*.log
+/bin/
+*.test
+*.out
+coverage.*
+node_modules/
+dist/
+coverage/
+
+# Claude Code files (never committed)
+.claude/
+CLAUDE.local.md
+CLAUDE.md
+.mcp.json
+
+# Local tool caches and downloads (kept inside the repo)
+.tmp/
+.npm-cache/
+.gocache/
+.gomodcache/
+
+# k6 console logs of recorded runs are kept as evidence
+!docs/results/runs/**/*.k6.log

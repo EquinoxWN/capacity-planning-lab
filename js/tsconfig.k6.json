@@ -1,0 +1,8 @@
+{
+  "//": "Type-checks the k6 entry scripts against the k6 API types; Node types are excluded.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["k6"]
+  },
+  "include": ["k6/**/*.js"]
+}

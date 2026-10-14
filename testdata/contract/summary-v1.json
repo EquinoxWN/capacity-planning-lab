@@ -1,0 +1,118 @@
+{
+  "schema": "caplab.k6-summary.v1",
+  "kind": "stress",
+  "scale": "quick",
+  "label": "stress test: 5 steps of 5 s from 100 to 1600 req/s",
+  "slo": {
+    "p95Ms": 50,
+    "errorRate": 0.01,
+    "droppedRate": 0.01
+  },
+  "windows": [
+    {
+      "name": "step01",
+      "rate": 100,
+      "startS": 0,
+      "endS": 5,
+      "gate": false
+    },
+    {
+      "name": "step02",
+      "rate": 200,
+      "startS": 5,
+      "endS": 10,
+      "gate": false
+    },
+    {
+      "name": "step03",
+      "rate": 400,
+      "startS": 10,
+      "endS": 15,
+      "gate": false
+    },
+    {
+      "name": "step04",
+      "rate": 800,
+      "startS": 15,
+      "endS": 20,
+      "gate": false
+    },
+    {
+      "name": "step05",
+      "rate": 1600,
+      "startS": 20,
+      "endS": 25,
+      "gate": false
+    }
+  ],
+  "testRunDurationMs": 25005,
+  "totals": {
+    "requests": 15504,
+    "failedRate": 0.005,
+    "droppedIterations": 0,
+    "shedResponses": 0,
+    "transportErrors": 78,
+    "vusMax": 92,
+    "p50Ms": 1.582,
+    "p95Ms": 6.037,
+    "p99Ms": 9.634,
+    "maxMs": 21.423
+  },
+  "scenarios": [
+    {
+      "name": "step01",
+      "iterations": 500,
+      "failedRate": 0.156,
+      "droppedIterations": 0,
+      "p50Ms": 1.222,
+      "p95Ms": 2.495,
+      "p99Ms": 3.499,
+      "maxMs": 4.018,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step02",
+      "iterations": 1001,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.465,
+      "p95Ms": 2.609,
+      "p99Ms": 3.219,
+      "maxMs": 5.067,
+      "thresholdsOk": true
+    },
+    {
+      "name": "step03",
+      "iterations": 2001,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.33,
+      "p95Ms": 3.011,
+      "p99Ms": 4.08,
+      "maxMs": 8.354,
+      "thresholdsOk": true
+    },
+    {
+      "name": "step04",
+      "iterations": 4001,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.196,
+      "p95Ms": 3.151,
+      "p99Ms": 4.579,
+      "maxMs": 10.164,
+      "thresholdsOk": true
+    },
+    {
+      "name": "step05",
+      "iterations": 8001,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 2.316,
+      "p95Ms": 7.38,
+      "p99Ms": 11.168,
+      "maxMs": 21.423,
+      "thresholdsOk": true
+    }
+  ]
+}

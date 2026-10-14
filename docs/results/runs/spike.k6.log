@@ -1,0 +1,12 @@
+[trimmed for the repository: 12925 k6 "Request Failed" warnings removed (12383 "connectex: No connection could be made because the target machine actively refused it", 542 "request timeout"); first and last kept below]
+time="2026-10-09T20:46:23+07:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:64067/work\": dial tcp 127.0.0.1:64067: connectex: No connection could be made because the target machine actively refused it."
+time="2026-10-09T20:46:33+07:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:64067/work\": dial tcp 127.0.0.1:64067: connectex: No connection could be made because the target machine actively refused it."
+time="2026-10-09T20:46:18+07:00" level=warning msg="Insufficient VUs, reached 260 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=before
+time="2026-10-09T20:46:23+07:00" level=warning msg="Insufficient VUs, reached 400 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=spike
+time="2026-10-09T20:46:41+07:00" level=warning msg="Insufficient VUs, reached 260 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=after
+spike test: 960 -> 3200 req/s for 10 s -> 960 req/s
+total: 74546 requests, failed 19.90%, p95 141.873 ms, dropped 5456, max VUs 660
+before      960 req/s  p95   97.008 ms  failed   1.50%  dropped    19  misses SLO (gated)
+spike      3200 req/s  p95  199.716 ms  failed  50.00%  dropped  5228  misses SLO
+after       960 req/s  p95  115.878 ms  failed   4.10%  dropped   209  misses SLO (gated)
+time="2026-10-09T20:47:03+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:spike}, http_req_duration{scenario:after}, http_req_duration{scenario:before}, http_req_duration{scenario:spike}, http_req_failed{scenario:after}, http_req_failed{scenario:before}, http_req_failed{scenario:spike}' have been crossed"

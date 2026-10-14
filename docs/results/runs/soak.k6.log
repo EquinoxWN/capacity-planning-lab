@@ -1,0 +1,6 @@
+time="2026-10-09T20:48:13+07:00" level=warning msg="Insufficient VUs, reached 260 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=soak
+shortened soak: 960 req/s for 180 s on a shared laptop (a production soak runs for hours)
+total: 176360 requests, failed 3.00%, p95 115.58 ms, dropped 1705, max VUs 520
+warmup      960 req/s  p95    8.171 ms  failed   0.00%  dropped     0  meets SLO
+soak        960 req/s  p95  120.452 ms  failed   3.10%  dropped  1705  misses SLO (gated)
+time="2026-10-09T20:50:14+07:00" level=error msg="thresholds on metrics 'http_req_duration{scenario:soak}, http_req_failed{scenario:soak}' have been crossed"

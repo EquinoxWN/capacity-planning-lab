@@ -1,0 +1,11 @@
+stress test: 8 steps of 15 s from 400 to 1800 req/s
+total: 129134 requests, failed 0.80%, p95 57.278 ms, dropped 2867, max VUs 495
+step01      400 req/s  p95    3.477 ms  failed   0.00%  dropped     0  meets SLO
+step02      600 req/s  p95    5.354 ms  failed   0.00%  dropped     0  meets SLO
+step03      800 req/s  p95    2.366 ms  failed   0.00%  dropped     0  meets SLO
+step04     1000 req/s  p95   10.545 ms  failed   0.00%  dropped   255  misses SLO
+step05     1200 req/s  p95   97.965 ms  failed   1.00%  dropped   637  misses SLO
+step06     1400 req/s  p95  115.943 ms  failed   3.40%  dropped   917  misses SLO
+step07     1600 req/s  p95   24.899 ms  failed   0.00%  dropped   681  misses SLO
+step08     1800 req/s  p95   66.887 ms  failed   0.80%  dropped   377  misses SLO
+time="2026-10-09T20:24:40+07:00" level=error msg="thresholds on metrics 'dropped_iterations{scenario:step04}, dropped_iterations{scenario:step05}, dropped_iterations{scenario:step06}, dropped_iterations{scenario:step07}, dropped_iterations{scenario:step08}, http_req_duration{scenario:step05}, http_req_duration{scenario:step06}, http_req_duration{scenario:step08}, http_req_failed{scenario:step06}' have been crossed"

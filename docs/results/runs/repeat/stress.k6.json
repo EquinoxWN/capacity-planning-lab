@@ -1,0 +1,172 @@
+{
+  "schema": "caplab.k6-summary.v1",
+  "kind": "stress",
+  "scale": "full",
+  "label": "stress test: 8 steps of 15 s from 400 to 2500 req/s",
+  "slo": {
+    "p95Ms": 50,
+    "errorRate": 0.01,
+    "droppedRate": 0.01
+  },
+  "windows": [
+    {
+      "name": "step01",
+      "rate": 400,
+      "startS": 0,
+      "endS": 15,
+      "gate": false
+    },
+    {
+      "name": "step02",
+      "rate": 700,
+      "startS": 15,
+      "endS": 30,
+      "gate": false
+    },
+    {
+      "name": "step03",
+      "rate": 1000,
+      "startS": 30,
+      "endS": 45,
+      "gate": false
+    },
+    {
+      "name": "step04",
+      "rate": 1300,
+      "startS": 45,
+      "endS": 60,
+      "gate": false
+    },
+    {
+      "name": "step05",
+      "rate": 1600,
+      "startS": 60,
+      "endS": 75,
+      "gate": false
+    },
+    {
+      "name": "step06",
+      "rate": 1900,
+      "startS": 75,
+      "endS": 90,
+      "gate": false
+    },
+    {
+      "name": "step07",
+      "rate": 2200,
+      "startS": 90,
+      "endS": 105,
+      "gate": false
+    },
+    {
+      "name": "step08",
+      "rate": 2500,
+      "startS": 105,
+      "endS": 120,
+      "gate": false
+    }
+  ],
+  "testRunDurationMs": 120397,
+  "totals": {
+    "requests": 165605,
+    "failedRate": 0.106,
+    "droppedIterations": 8396,
+    "shedResponses": 17587,
+    "transportErrors": 0,
+    "vusMax": 800,
+    "p50Ms": 13.658,
+    "p95Ms": 221.711,
+    "p99Ms": 422.012,
+    "maxMs": 1575.679
+  },
+  "scenarios": [
+    {
+      "name": "step01",
+      "iterations": 6001,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.429,
+      "p95Ms": 75.915,
+      "p99Ms": 385.235,
+      "maxMs": 630.898,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step02",
+      "iterations": 10501,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.325,
+      "p95Ms": 9.866,
+      "p99Ms": 41.312,
+      "maxMs": 89.579,
+      "thresholdsOk": true
+    },
+    {
+      "name": "step03",
+      "iterations": 14802,
+      "failedRate": 0.059,
+      "droppedIterations": 198,
+      "p50Ms": 1.59,
+      "p95Ms": 182.207,
+      "p99Ms": 413.594,
+      "maxMs": 581.852,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step04",
+      "iterations": 19501,
+      "failedRate": 0,
+      "droppedIterations": 0,
+      "p50Ms": 1.411,
+      "p95Ms": 6.293,
+      "p99Ms": 19.085,
+      "maxMs": 100.535,
+      "thresholdsOk": true
+    },
+    {
+      "name": "step05",
+      "iterations": 22382,
+      "failedRate": 0.039,
+      "droppedIterations": 1618,
+      "p50Ms": 2.556,
+      "p95Ms": 165.26,
+      "p99Ms": 958.813,
+      "maxMs": 1575.679,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step06",
+      "iterations": 28501,
+      "failedRate": 0.004,
+      "droppedIterations": 0,
+      "p50Ms": 8.429,
+      "p95Ms": 54.213,
+      "p99Ms": 73.914,
+      "maxMs": 140.673,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step07",
+      "iterations": 31172,
+      "failedRate": 0.188,
+      "droppedIterations": 1828,
+      "p50Ms": 77.939,
+      "p95Ms": 270.487,
+      "p99Ms": 366.528,
+      "maxMs": 720.812,
+      "thresholdsOk": false
+    },
+    {
+      "name": "step08",
+      "iterations": 32745,
+      "failedRate": 0.302,
+      "droppedIterations": 4752,
+      "p50Ms": 96.11,
+      "p95Ms": 333.67,
+      "p99Ms": 513.715,
+      "maxMs": 806.428,
+      "thresholdsOk": false
+    }
+  ]
+}

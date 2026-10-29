@@ -142,7 +142,7 @@ Latest local run (full detail in [docs/results/m1.md](docs/results/m1.md)):
 |---|---|
 | Tests | 54 passed, 0 failed (38 Go, 16 Node) |
 | Lint and types | gofmt, go vet, tsc strict `checkJs`: clean |
-| Audits | govulncheck v1.8.0 (Go 1.26.9): no vulnerabilities; npm audit: 0 |
+| Audits | govulncheck v1.8.0 (Go 1.26.10): no vulnerabilities; npm audit: 0 |
 | Stress, sustained rate (service at GOMAXPROCS=2) | 1600 req/s in 4 of 5 runs, 1300 in one; breaking point 1900 req/s |
 | USE at the breaking point | CPU 88% of 2 CPUs, scheduler p99 59 ms, queue 64 of 64, 1.4% shed; workers 51% busy, memory 16% of 256 MiB |
 | Load, spike, soak at 960 req/s (final suite) | missed the SLO: 8, 2 and 18 s of host stalls; spike 12,383 connections refused before the handler |

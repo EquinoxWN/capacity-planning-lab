@@ -17,13 +17,21 @@ import (
 // k6ThresholdsFailed is k6's exit code when a threshold failed; the verdict decides what that means.
 const k6ThresholdsFailed = 99
 
+// DefaultK6Timeout bounds one k6 run: plans are capped at 600 s (profiles.js), plus k6's 30 s
+// graceful stop and start-up. A k6 that runs longer is killed and the run fails.
+const DefaultK6Timeout = 12 * time.Minute
+
+// k6VersionTimeout bounds `k6 version`.
+const k6VersionTimeout = 30 * time.Second
+
 // K6 runs the k6 binary with telemetry off and its config and cache kept in Home.
 type K6 struct {
-	Bin     string    // path to the k6 executable
-	Scripts string    // directory holding load.js, stress.js, spike.js and soak.js
-	Procs   int       // GOMAXPROCS for k6, to cap its CPU use
-	Home    string    // directory used as k6's config and cache home
-	Out     io.Writer // receives k6's console output as well as the log file
+	Bin     string        // path to the k6 executable
+	Scripts string        // directory holding load.js, stress.js, spike.js and soak.js
+	Procs   int           // GOMAXPROCS for k6, to cap its CPU use
+	Home    string        // directory used as k6's config and cache home
+	Out     io.Writer     // receives k6's console output as well as the log file
+	Timeout time.Duration // longest one k6 run may take; 0 means DefaultK6Timeout
 }
 
 // overridden are environment variables k6 must not inherit, compared upper-case.
@@ -87,6 +95,8 @@ func (k K6) Version(ctx context.Context) (string, error) {
 	if err := k.prepare(); err != nil {
 		return "", err
 	}
+	ctx, cancel := context.WithTimeout(ctx, k6VersionTimeout)
+	defer cancel()
 	cmd := exec.CommandContext(ctx, k.Bin, "version")
 	cmd.Env = k.Env(os.Environ())
 	b, err := cmd.Output()
@@ -116,7 +126,13 @@ func (k K6) Load(ctx context.Context, kind, baseURL, summaryPath string, p Param
 	if k.Out != nil {
 		out = io.MultiWriter(logf, k.Out)
 	}
-	cmd := exec.CommandContext(ctx, k.Bin, k.Args(kind, baseURL, summaryPath, p)...)
+	timeout := k.Timeout
+	if timeout <= 0 {
+		timeout = DefaultK6Timeout
+	}
+	rctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+	cmd := exec.CommandContext(rctx, k.Bin, k.Args(kind, baseURL, summaryPath, p)...)
 	cmd.Env = k.Env(os.Environ())
 	cmd.Stdout, cmd.Stderr = out, out
 	cmd.WaitDelay = 5 * time.Second
@@ -124,6 +140,9 @@ func (k K6) Load(ctx context.Context, kind, baseURL, summaryPath string, p Param
 	res := ClientResult{Version: version}
 	if cmd.ProcessState != nil {
 		res.CPUSeconds = (cmd.ProcessState.UserTime() + cmd.ProcessState.SystemTime()).Seconds()
+	}
+	if runErr != nil && errors.Is(rctx.Err(), context.DeadlineExceeded) {
+		return res, fmt.Errorf("k6 %s did not finish within %s", kind, timeout)
 	}
 	var exit *exec.ExitError
 	if runErr != nil && !(errors.As(runErr, &exit) && exit.ExitCode() == k6ThresholdsFailed) {

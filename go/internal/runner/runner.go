@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -104,7 +105,9 @@ func Run(ctx context.Context, o Options, load LoadFunc) (report.Report, error) {
 	defer func() {
 		sctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		_ = srv.Shutdown(sctx)
+		if err := srv.Shutdown(sctx); err != nil {
+			o.Log("service shutdown: %v", err)
+		}
 	}()
 	base := "http://" + ln.Addr().String()
 	if err := waitHealthy(ctx, base); err != nil {
@@ -112,13 +115,16 @@ func Run(ctx context.Context, o Options, load LoadFunc) (report.Report, error) {
 	}
 	o.Log("service listening on %s (GOMAXPROCS=%d, memory limit %d MiB)", base, runtime.GOMAXPROCS(0), debug.SetMemoryLimit(-1)>>20)
 
+	summaryPath := filepath.Join(o.OutDir, o.Kind+".k6.json")
+	// A stale summary must never be read as this run's.
+	if err := os.Remove(summaryPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return report.Report{}, fmt.Errorf("remove stale k6 summary: %w", err)
+	}
 	sampler := usage.NewSampler(svc.Stats(), runtime.GOMAXPROCS(0), o.Service.Workers)
 	sctx, stopSampling := context.WithCancel(ctx)
 	var wg sync.WaitGroup
 	wg.Go(func() { sampler.Run(sctx, o.Interval) })
 
-	summaryPath := filepath.Join(o.OutDir, o.Kind+".k6.json")
-	_ = os.Remove(summaryPath) // a stale summary must never be read as this run's
 	started := time.Now()
 	client, loadErr := load(ctx, o.Kind, base, summaryPath, o.Params)
 	wall := time.Since(started).Seconds()
@@ -191,10 +197,10 @@ func write(dir string, r report.Report) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(dir, r.Kind+".json"), append(j, '\n'), 0o640); err != nil {
+	if err := writeFileAtomic(filepath.Join(dir, r.Kind+".json"), append(j, '\n')); err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dir, r.Kind+".md"), []byte(report.Markdown(r)), 0o640)
+	return writeFileAtomic(filepath.Join(dir, r.Kind+".md"), []byte(report.Markdown(r)))
 }
 
 // validKind reports whether k is one of Kinds.

@@ -74,6 +74,7 @@ type Sampler struct {
 	dropped int
 
 	prevCPU              time.Duration
+	cpuOK                bool // prevCPU holds a successful reading
 	prevHostBusy, prevHT time.Duration
 	hostOK               bool
 	prevRT               runtimeReading
@@ -84,7 +85,9 @@ type Sampler struct {
 func NewSampler(src Cutter, procs, workers int) *Sampler {
 	s := &Sampler{src: src, procs: max(procs, 1), workers: max(workers, 1)}
 	src.Cut() // discard anything before sampling starts
-	s.prevCPU, _ = ProcessCPU()
+	if cpu, err := processCPU(); err == nil {
+		s.prevCPU, s.cpuOK = cpu, true
+	}
 	if b, t, err := HostCPU(); err == nil {
 		s.prevHostBusy, s.prevHT, s.hostOK = b, t, true
 	}
@@ -136,9 +139,14 @@ func (s *Sampler) Tick() {
 	smp.QueueAvg = iv.QueueSeconds / dur
 	smp.QueueMax = iv.QueueMax
 
-	if cpu, err := ProcessCPU(); err == nil {
-		smp.CPUUtil = (cpu - s.prevCPU).Seconds() / (dur * float64(s.procs))
-		s.prevCPU = cpu
+	// A delta needs two successful readings in a row; otherwise it would span the wrong interval.
+	if cpu, err := processCPU(); err == nil {
+		if s.cpuOK {
+			smp.CPUUtil = (cpu - s.prevCPU).Seconds() / (dur * float64(s.procs))
+		}
+		s.prevCPU, s.cpuOK = cpu, true
+	} else {
+		s.cpuOK = false
 	}
 	if s.hostOK {
 		if b, t, err := HostCPU(); err == nil && t > s.prevHT {

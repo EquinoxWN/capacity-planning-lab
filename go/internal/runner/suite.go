@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -62,7 +61,7 @@ func Suite(ctx context.Context, o Options, load LoadFunc) (SuiteResult, error) {
 		}
 		res.Reports = append(res.Reports, r)
 	}
-	return res, os.WriteFile(filepath.Join(o.OutDir, "suite.md"), []byte(SuiteMarkdown(res)), 0o640)
+	return res, writeFileAtomic(filepath.Join(o.OutDir, "suite.md"), []byte(SuiteMarkdown(res)))
 }
 
 // SuiteMarkdown renders one line per run plus the derived rates.

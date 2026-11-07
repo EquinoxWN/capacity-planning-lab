@@ -11,6 +11,9 @@ import (
 // ErrUnsupported means the platform offers no CPU counter this package can read.
 var ErrUnsupported = errors.New("cpu counters not supported on this platform")
 
+// processCPU is ProcessCPU; tests replace it to simulate a failed reading.
+var processCPU = ProcessCPU
+
 // parseProcStat reads the aggregate "cpu" line of /proc/stat; hz is USER_HZ (ticks per second).
 func parseProcStat(b []byte, hz int64) (busy, total time.Duration, err error) {
 	line, _, _ := bytes.Cut(b, []byte("\n"))

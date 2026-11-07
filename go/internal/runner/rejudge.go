@@ -47,7 +47,7 @@ func Rejudge(dir string) ([]report.Report, error) {
 		if f := out[2].Focus(); f != nil {
 			s.PeakRate = int(f.Window.Rate)
 		}
-		return out, os.WriteFile(filepath.Join(dir, "suite.md"), []byte(SuiteMarkdown(s)), 0o640)
+		return out, writeFileAtomic(filepath.Join(dir, "suite.md"), []byte(SuiteMarkdown(s)))
 	}
 	return out, nil
 }

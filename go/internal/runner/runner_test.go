@@ -141,6 +141,9 @@ func TestPlanNeedsAConfirmedBreak(t *testing.T) {
 	if _, _, err := Plan(report.Break{Found: false, ClientLimited: true, Confirmed: true, SustainedRate: 100}); err == nil {
 		t.Fatal("client-limited result accepted")
 	}
+	if _, _, err := Plan(report.Break{Found: true, ClientLimited: true, Confirmed: true, SustainedRate: 100}); err == nil {
+		t.Fatal("a found and confirmed break that was client-limited must not size the plan")
+	}
 	p, k, err := Plan(report.Break{Found: true, Confirmed: true, SustainedRate: 1000})
 	if err != nil || p != 600 || k != 2000 {
 		t.Fatalf("plan %d %d %v", p, k, err)

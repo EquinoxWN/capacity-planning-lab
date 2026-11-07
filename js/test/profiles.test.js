@@ -44,6 +44,13 @@ test("every window gets SLO thresholds tagged by its scenario", () => {
   }
 });
 
+test("the dropped-iteration budget rounds down, never up", () => {
+  // The 10 s warmup at 155 req/s plans 1,550 requests; 1% of that is 15.5, so 15 may be dropped.
+  const plan = buildPlan(parseParams("load", { RATE: "155" }));
+  assert.deepEqual(plan.thresholds["dropped_iterations{scenario:warmup}"], ["count<=15"]);
+  assert.deepEqual(plan.thresholds["dropped_iterations{scenario:load}"], ["count<=93"]);
+});
+
 test("stress steps are open-model, ungated and strictly increasing", () => {
   const plan = buildPlan(parseParams("stress", {}));
   assert.deepEqual(plan.windows.map((w) => w.rate), DEFAULTS.full.steps);
@@ -71,6 +78,7 @@ test("the spike peak defaults to twice the rate and must exceed it", () => {
   const plan = buildPlan(parseParams("spike", { RATE: "500" }));
   assert.deepEqual(plan.windows.map((w) => [w.name, w.rate]), [["before", 500], ["spike", 1000], ["after", 500]]);
   assert.throws(() => parseParams("spike", { RATE: "500", PEAK: "400" }), /PEAK \(400\) must be above RATE/);
+  assert.throws(() => parseParams("spike", { RATE: "500", PEAK: "500" }), /PEAK \(500\) must be above RATE/);
 });
 
 test("the soak is labelled as shortened", () => {
@@ -99,6 +107,9 @@ test("environment input is validated", () => {
 test("plans longer than the shared-machine limit are refused", () => {
   const steps = Array.from({ length: 12 }, (_, i) => String((i + 1) * 10)).join(",");
   assert.throws(() => buildPlan(parseParams("stress", { STEPS: steps, HOLD_S: "60" })), /over the 600 s limit/);
+  // 12 steps of 50 s is exactly 600 s and runs; 51 s each is 612 s and is refused.
+  assert.equal(buildPlan(parseParams("stress", { STEPS: steps, HOLD_S: "50" })).totalS, 600);
+  assert.throws(() => buildPlan(parseParams("stress", { STEPS: steps, HOLD_S: "51" })), /plan runs 612 s/);
 });
 
 test("VU pools grow with the rate and stay capped", () => {

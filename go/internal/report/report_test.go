@@ -159,6 +159,9 @@ func TestRecovery(t *testing.T) {
 	if _, ok := recovery(samples[:14], 10, 50); ok {
 		t.Fatal("one healthy sample is not a recovery")
 	}
+	if _, ok := recovery(samples[:15], 10, 50); ok {
+		t.Fatalf("two healthy samples are not a recovery; %d in a row are needed", RecoveryHoldS)
+	}
 }
 
 func TestDrift(t *testing.T) {
@@ -171,6 +174,18 @@ func TestDrift(t *testing.T) {
 	d, ok := drift(s, flat, Context{})
 	if !ok || d.HeapRatio != 1 || d.GoroutinesRatio != 1 {
 		t.Fatalf("flat drift %+v %v", d, ok)
+	}
+	// Heap 1.5x the first third: above the 1.25 limit, so the soak fails.
+	var moderate []usage.Sample
+	for i := 1; i <= 31; i++ {
+		heap := uint64(1000)
+		if i > 18 {
+			heap = 1500
+		}
+		moderate = append(moderate, usage.Sample{T: float64(i), Dur: 1, HeapBytes: heap, Goroutines: 10})
+	}
+	if m := Judge(s, nil, moderate, Context{ServiceAlive: true}); m.Pass || m.Drift == nil || m.Drift.HeapRatio < 1.4 || m.Drift.HeapRatio > 1.6 {
+		t.Fatalf("a heap 1.5x larger at the end must fail the soak: %+v", m)
 	}
 	v := Judge(s, nil, growing, Context{ServiceAlive: true})
 	if v.Pass || v.Drift == nil || v.Drift.HeapRatio <= MaxDriftRatio {
@@ -231,9 +246,25 @@ func TestSaturatedServiceIsNotClientLimited(t *testing.T) {
 	if r.ClientLimited || r.MeetsSLO {
 		t.Fatalf("a CPU-saturated service (scheduler p99 1.6 s) was blamed on the client: %+v", r)
 	}
+	r.Server = usage.Window{P95Ms: 3, CPUUtilAvg: 0.95, SchedP99Ms: 2}
+	classify(&r, slo)
+	if r.ClientLimited {
+		t.Fatal("drops while the service uses 95% of its CPU cap are not client-limited, even with a fast scheduler")
+	}
 	r.Server = usage.Window{P95Ms: 3, CPUUtilAvg: 0.4, SchedP99Ms: 2}
 	classify(&r, slo)
 	if !r.ClientLimited {
 		t.Fatal("drops with an idle, healthy service are client-limited")
+	}
+}
+
+func TestMissesCountErrorsAboveTheSLO(t *testing.T) {
+	slo := SLO{P95Ms: 50, ErrorRate: 0.01, DroppedRate: 0.01}
+	w := Window{Name: "load", Rate: 100, StartS: 0, EndS: 10}
+	if m := misses(Scenario{Iterations: 1000, FailedRate: 0.015}, w, slo); len(m) != 1 || !strings.HasPrefix(m[0], "errors 1.50% > 1%") {
+		t.Fatalf("1.5%% errors against a 1%% SLO: misses %v", m)
+	}
+	if m := misses(Scenario{Iterations: 1000, FailedRate: 0.01}, w, slo); len(m) != 0 {
+		t.Fatalf("exactly 1%% errors meets a 1%% SLO: misses %v", m)
 	}
 }

@@ -19,7 +19,7 @@ answer them:
 
 ![caplab suite: k6 output per window and the verdicts](docs/proof/suite.jpg)
 
-54 tests pass, the k6 scripts type-check in strict mode, and govulncheck and npm audit find
+60 tests pass (54 when this screenshot was taken), the k6 scripts type-check in strict mode, and govulncheck and npm audit find
 nothing:
 
 ![gofmt, go vet, go test, tsc, node --test, govulncheck and npm audit output](docs/proof/tests.jpg)
@@ -132,15 +132,15 @@ Latest local run (full detail in [docs/results/m1.md](docs/results/m1.md)):
 |---|---|---|
 | `go/internal/hist/hist_test.go` | 4 | Quantile error bound (never under, at most 9.06% over), bucket edges, merge, empty input |
 | `go/internal/service/service_test.go` | 11 | Work, shedding on a full queue and after the max wait, queued service, 200 concurrent requests all counted, occupancy integrals, metrics, config bounds, loopback only, HTTP/1.1 only |
-| `go/internal/usage/usage_test.go` | 6 | CPU counters move, `/proc/stat` parsing, runtime histograms, sampling and aggregation, memory cap, stall detection |
-| `go/internal/report/report_test.go` | 11 | Contract fixture, 13 broken summaries refused, breaking-point rules, verdicts, client-limited and saturated windows, recovery, drift, stalls, spike client check, Markdown |
-| `go/internal/runner/runner_test.go` | 6 | End-to-end run with a fake load generator, refused inputs, suite rate derivation, planning rule, contained k6 environment, rejudge |
-| `js/test/profiles.test.js` | 11 | Windows, thresholds, executors, gating, spike and soak rules, input validation, length limit, VU pools, loopback URLs |
+| `go/internal/usage/usage_test.go` + `cpu_baseline_test.go` | 7 | CPU counters move, CPU share only from two good readings in a row, `/proc/stat` parsing, runtime histograms, sampling and aggregation, memory cap, stall detection |
+| `go/internal/report/report_test.go` | 12 | Contract fixture, error-rate misses at the SLO edge, 13 broken summaries refused, breaking-point rules, verdicts, client-limited and saturated windows, recovery, drift, stalls, spike client check, Markdown |
+| `go/internal/runner/runner_test.go` + `quality_test.go` | 9 | End-to-end run with a fake load generator, refused inputs, suite rate derivation, planning rule, contained k6 environment, rejudge, a hung k6 killed at its timeout, atomic report writes, a stale summary that cannot be removed fails the run |
+| `js/test/profiles.test.js` | 12 | Windows, thresholds, executors, gating, spike and soak rules, input validation, length limit, VU pools, loopback URLs |
 | `js/test/summary.test.js` | 5 | Node reproduces k6's own summary byte for byte; recorded numbers; failures; console lines |
 
 | Check | Result |
 |---|---|
-| Tests | 54 passed, 0 failed (38 Go, 16 Node) |
+| Tests | 60 passed, 0 failed (43 Go, 17 Node) |
 | Lint and types | gofmt, go vet, tsc strict `checkJs`: clean |
 | Audits | govulncheck v1.8.0 (Go 1.26.10): no vulnerabilities; npm audit: 0 |
 | Stress, sustained rate (service at GOMAXPROCS=2) | 1600 req/s in 4 of 5 runs, 1300 in one; breaking point 1900 req/s |
@@ -149,6 +149,8 @@ Latest local run (full detail in [docs/results/m1.md](docs/results/m1.md)):
 | Recovery after the spike (server samples) | 0.0 s in the final suite (its after window still missed the SLO on the client side during host stalls), 0.2 s in the earlier suite |
 | Soak drift (180 s, shortened) | heap x0.83, goroutines x0.53: no growth |
 | Load generator | 10% to 18% of its CPU cap; peak 461 MiB |
+
+Ten-rule quality check and mutation table: [docs/quality/2026-11-01.md](docs/quality/2026-11-01.md).
 
 CI runs lint, tests with the race detector, both audits and the quick suite on every push.
 

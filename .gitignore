@@ -22,6 +22,7 @@ CLAUDE.md
 .npm-cache/
 .gocache/
 .gomodcache/
+.gopath/
 
 # k6 console logs of recorded runs are kept as evidence
 !docs/results/runs/**/*.k6.log

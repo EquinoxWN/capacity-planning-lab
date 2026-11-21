@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -79,7 +80,7 @@ type Options struct {
 
 // Run executes one test and writes <kind>.json and <kind>.md to OutDir.
 func Run(ctx context.Context, o Options, load LoadFunc) (report.Report, error) {
-	if !validKind(o.Kind) {
+	if !slices.Contains(Kinds, o.Kind) {
 		return report.Report{}, fmt.Errorf("unknown test kind %q", o.Kind)
 	}
 	if o.Interval <= 0 {
@@ -201,16 +202,6 @@ func write(dir string, r report.Report) error {
 		return err
 	}
 	return writeFileAtomic(filepath.Join(dir, r.Kind+".md"), []byte(report.Markdown(r)))
-}
-
-// validKind reports whether k is one of Kinds.
-func validKind(k string) bool {
-	for _, x := range Kinds {
-		if x == k {
-			return true
-		}
-	}
-	return false
 }
 
 // healthy reports whether /healthz answers 200 within a second.

@@ -26,3 +26,11 @@ CLAUDE.md
 
 # k6 console logs of recorded runs are kept as evidence
 !docs/results/runs/**/*.k6.log
+
+# Secrets (never committed)
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.tfstate
